@@ -1,0 +1,26 @@
+# model:
+#   friend4Group (as default)   Reply only when ur friends message ask.
+#   all                         Reply 4 all the users, including group user.
+#   friendsOnly                 Reply only 4 friends.
+#   groupOnly                   Reply only group message.
+
+model: friend4Group
+
+# userBlacklist
+#   name: [],   User's name
+#   alias: [],  User's alias name
+# notice: the black list has the most high priority!!!
+userBlackList:
+  name:
+    - xxx
+  alias:
+    - xxx
+
+groupBlackList:
+  name:
+    - xxx
+  alias:
+    - xxx
+
+# We haven't support white list. You can rewrite the authChecker/yamlAuthChecker.js file to support it.
+# Or you can write a new auth checker.
