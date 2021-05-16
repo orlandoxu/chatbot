@@ -6,7 +6,7 @@ const { Swap999 } = require('../lib/swap999')
 class UniSpider {
   constructor() {
     this._spiderProxy = new Swap999({
-      platform: 'uniswap'
+      platform: 'uniswap', writeFile: true
     })
   }
 

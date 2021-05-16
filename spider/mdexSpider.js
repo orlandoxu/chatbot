@@ -1,4 +1,3 @@
-const request = require('request');
 const { Swap999 } = require('../lib/swap999')
 
 // It's hard to get price from mdex. So...
@@ -6,7 +5,7 @@ const { Swap999 } = require('../lib/swap999')
 class MdexSpider {
   constructor() {
     this._spiderProxy = new Swap999({
-      platform: 'mdex'
+      platform: 'mdex', writeFile: true
     })
   }
 
