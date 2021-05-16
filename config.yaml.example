@@ -19,8 +19,9 @@ userBlackList:
 groupBlackList:
   name:
     - 'xxx'
-  alias:
-    - 'xxx'
+#  can not support group's alias black list.
+#  alias:
+#    - 'xxx'
 
 # We haven't support white list. You can rewrite the authChecker/yamlAuthChecker.js file to support it.
 # Or you can write a new auth checker.
