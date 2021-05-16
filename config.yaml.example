@@ -1,10 +1,10 @@
-# model:
+# mode:
 #   friend4Group (as default)   Reply only when ur friends message ask.
 #   all                         Reply 4 all the users, including group user.
 #   friendsOnly                 Reply only 4 friends.
 #   groupOnly                   Reply only group message.
 
-model: 'friend4Group'
+mode: 'friend4Group'
 
 # userBlacklist
 #   name: [],   User's name

@@ -106,7 +106,7 @@ class WechatRobot {
       const coin = coinItem[i]
       msg = `${msg}\nToken：${coin.name}`
       coin.dex.forEach(v => {
-        msg = `${msg}\n    ${v.dexName} - ${v.price}`
+        msg = `${msg}\n    [${v.dexName}]\t${v.price}`
       })
     }
 

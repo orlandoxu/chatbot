@@ -28,7 +28,7 @@ class YamlAuthChecker {
     }
 
     const config = this._config
-    switch (config.model) {
+    switch (config.mode) {
       case 'friendOnly':
         if (isFriend && !room) {
           return true;
