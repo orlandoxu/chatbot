@@ -36,6 +36,11 @@ class TextParser {
       .toLocaleLowerCase()
       .split(' ')
       .reduce((p, n) => {
+        if (n === 's') {
+          options.push('-s')
+          return p
+        }
+
         if (/^--/.test(n)) {
           options.push(n)
           return p
