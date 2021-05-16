@@ -6,13 +6,13 @@ const { Swap999 } = require('../lib/swap999')
 class PancakeSpider {
   constructor() {
     this._spiderProxy = new Swap999({
-      platform: 'pancake'
+      platform: 'pancakeswap'
     })
   }
 
   // Return spider's name
   async getSpiderName() {
-    return 'pan'
+    return 'cake'
   }
 
   /**
