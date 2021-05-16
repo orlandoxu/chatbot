@@ -3,27 +3,31 @@ class TextParser {
 
   // Add the list u want to parse
   watch(coinList) {
-    if (!Object.isArray(coinList)) {
+    if (!Array.isArray(coinList)) {
       return false
     }
 
-    this.coinList = coinList.reduce((p, n) => {
+    this._coinList = this._coinList || []
+
+    this._coinList = [...this._coinList, ...(coinList.reduce((p, n) => {
       p.push(n.toLocaleLowerCase().trim())
       return p
-    })
+    }, []))]
   }
 
   // Just parse string message
   // Result is tuple like
-  // [cancelOrNot, ['btc', 'ltc']] or undefined
+  // [recall, ['-s', '-u'], ['btc', 'ltc']] or undefined
   messageParse(textMessage) {
     if (typeof textMessage !== 'string') {
       return
     }
 
-    if (!this.coinList || this.coinList.length === 0) {
+    if (!this._coinList || this._coinList.length === 0) {
       return
     }
+
+    const options = []
 
     const arr = textMessage
       .replace(/\，/g, ' ')
@@ -32,7 +36,21 @@ class TextParser {
       .toLocaleLowerCase()
       .split(' ')
       .reduce((p, n) => {
-        if (this.coinList.includes(n) || n === '-s') {
+        if (/^--/.test(n)) {
+          options.push(n)
+          return p
+        }
+
+        if (/^-/.test(n)) {
+          n.split('').forEach((op, idx) => {
+            if (idx > 0) {
+              options.push(`-${op}`)
+            }
+          })
+          return p
+        }
+
+        if (this._coinList.includes(n)) {
           p.push(n)
         }
 
@@ -47,7 +65,7 @@ class TextParser {
       return
     }
 
-    return [arr.includes('-s'), arr.reduce((p, n) => {
+    return [arr.includes('-s'), options, arr.reduce((p, n) => {
       if (n !== '-s') {
         p.push(n)
       }

@@ -3,16 +3,16 @@ const { Swap999 } = require('../lib/swap999')
 
 // It's hard to get price from mdex. So...
 // Get price from swap999
-class MdexSpider {
+class UniSpider {
   constructor() {
     this._spiderProxy = new Swap999({
-      platform: 'mdex'
+      platform: 'uniswap'
     })
   }
 
   // Return spider's name
   async getSpiderName() {
-    return 'mdex'
+    return 'uni'
   }
 
   /**
@@ -31,4 +31,5 @@ class MdexSpider {
   }
 }
 
-exports.MdexSpider = MdexSpider
+
+exports.UniSpider = UniSpider

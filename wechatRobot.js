@@ -1,18 +1,21 @@
 const qrTerminal = require('qrcode-terminal')
+const { date } = require('./lib/tools')
 
 class WechatRobot {
   // private member
   //    _msgParser   -   A wechat message parser
   //    _spiderList  -   Spiders
   //    _user        -   Login user
-  //    _coinList    -   CoinList
+  //    _coin2SpiderMap    -   _coin2SpiderMap
   //        ltc => { 'mdex': spiderMdex }
 
   constructor({spiderList, msgParser, authChecker}) {
     this._msgParser = msgParser
     this._spiderList = spiderList
     this._authChecker = authChecker
+    this._coin2SpiderMap = null
   }
+
 
   login(user) {
     console.log(`User ${user.id} logged in`)
@@ -30,6 +33,7 @@ class WechatRobot {
   }
 
   async _initSpider4CoinList() {
+    this._coin2SpiderMap = this._coin2SpiderMap || {}
     for (let i = 0; i < this._spiderList.length; i++) {
       const spiderName = await this._spiderList[i].getSpiderName()
 
@@ -39,60 +43,110 @@ class WechatRobot {
       }
 
       coinArr.forEach((item, idx) => {
-        this._coinList[item] = this._coinList[item] || {}
-        this._coinList[item][spiderName] = this._spiderList[i]
+        this._coin2SpiderMap[item] = this._coin2SpiderMap[item] || {}
+        this._coin2SpiderMap[item][spiderName] = this._spiderList[i]
       })
     }
+
+    // Add all tokens to message parser
+    this._msgParser.watch(Object.keys(this._coin2SpiderMap))
   }
 
   async msgHander(message) {
+    // Step 1. Check login
     if (!this._user) {
       return false
     }
 
-    if (!this._coinList) {
+    // Step 2. Make sure ability is done
+    if (!this._coin2SpiderMap) {
       await this._initSpider4CoinList()
     }
 
-    const talker = message.talker()
+    // const talker = message.talker()
+    // if (talker.id === this._user.id) {
+    //   return false
+    // }
 
-    // Ignore bot self message
-    if (talker.id === this._user.id) {
-      return false
-    }
-
-    // Check the message can parse or not first. cause it's not a async func.
+    // Step 3. Parse the message
     const msgObject = this._msgParser.messageParse(message.text())
     if (!msgObject) {
       return
     }
 
-    // Check the user's auth
+    // Step 4. Check user's auth
     const hasAuth = await this._authChecker.checkMessagesAuth(message)
     if (!hasAuth) {
       return false
     }
 
-    const [cancelOrNot, checkCoinList] = msgObject
-    const messageText = await this._makeCoinListResultText(checkCoinList)
-    message.say(messageText)
+    // Can not recall a message, cause web plugin doesn't supported!
+    const [recall, options, coinList] = msgObject
+    if (!options.includes('-s') && !options.includes('--search')) {
+      return false
+    }
+    if (options.includes('-h') || options.includes('--help')) {
+      this._showHelp(message)
+    }
 
-    // console.log(`Message: ${message}`)
-    // console.log(`Message talker: ${message.talker().id}`)
-    // console.log(`Message to: ${message.to()}`)
-    // console.log(`Message room: ${message.room()}`)
-    // console.log(`Message age: ${message.age()}`)
-    // if (message.text() === 'hello') {
-    //   message.say('hellohello')
-    // }
+    // Step 5. Get the price and make the message
+    const coinItems = await this._getTokenPrices(coinList)
+    const msgText = await this._makeTokenPrice(coinItems)
+    message.say(msgText)
   }
 
-  async _makeCoinListResultText(checkCoinList) {
-    return 'xxxxxx'
+  /**
+   * @param coinItem {CoinItem[]}
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _makeTokenPrice(coinItem) {
+    let msg = `${date('时间：HH:MM', new Date())}`
+    for (let i = 0; i < coinItem.length; i++) {
+      const coin = coinItem[i]
+      msg = `${msg}\nToken：${coin.name}`
+      coin.dex.forEach(v => {
+        msg = `${msg}\n    ${v.dexName} - ${v.price}`
+      })
+    }
+
+    return msg
   }
 
-  _showHelp() {
-    // Here's system's help function.
+  /**
+   * @param coinList {[]}
+   * @returns {Promise<CoinItem[]>}
+   * @private
+   */
+  async _getTokenPrices(coinList) {
+    /**
+     * @type {CoinItem[]}
+     */
+    const coinPriceArr = []
+    for (let i = 0; i < coinList.length; i++) {
+      const coinName = coinList[i]
+      const spiderInfos = this._coin2SpiderMap[coinName]
+
+      /**
+       * @typedef {{dexName: string, price: number}} CoinDexObject
+       * @typedef {{name: string, dex: [CoinDexObject]}} CoinItem
+       * @type {CoinItem}
+       */
+      const coinItem = {name: coinName, dex: []}
+      for (let spiderName in spiderInfos) {
+        const spider = spiderInfos[spiderName]
+        const price = await spider.getTokenPrice(coinName)
+        coinItem.dex.push({dexName: spiderName, price: price})
+      }
+      coinPriceArr.push(coinItem)
+    }
+
+    return coinPriceArr
+  }
+
+  _showHelp(message) {
+    const help = 'this is help'
+    message.say(help)
   }
 
 }

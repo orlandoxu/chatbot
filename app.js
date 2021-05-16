@@ -8,6 +8,7 @@ const { TextParser } = require('./messageParser/textParser')
 // two spider
 const { MdexSpider } = require('./spider/mdexSpider')
 const { PancakeSpider } = require('./spider/pancakeSpider')
+const { UniSpider } = require('./spider/uniswapSpider')
 
 // 微信配置
 const options = {
@@ -17,15 +18,23 @@ const options = {
 
 const mdexSpider = new MdexSpider()
 const pancakeSpider = new PancakeSpider()
+const uniSpider = new UniSpider()
 const wechatRobot = new WechatRobot({
   authChecker: new YamlAuthChecker(),
-  msgParser: TextParser,
-  spiderList: [mdexSpider, pancakeSpider]
+  msgParser: new TextParser(),
+  // spiderList: [mdexSpider]
+  spiderList: [mdexSpider, pancakeSpider, uniSpider]
 })
 
 Wechaty.instance(options)
   .on('scan', wechatRobot.getQRCode)
-  .on('login', wechatRobot.login)
-  .on('logout', wechatRobot.logout)
-  .on('message', wechatRobot.msgHander)
+  .on('login', user => {
+    wechatRobot.login(user)
+  })
+  .on('logout', user => {
+    wechatRobot.logout(user)
+  })
+  .on('message', message => {
+    wechatRobot.msgHander(message)
+  })
   .start()

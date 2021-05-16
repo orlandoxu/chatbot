@@ -4,6 +4,9 @@
 const { loadConfig } = require('./yamlParser')
 
 class YamlAuthChecker {
+  constructor() {
+  }
+
   // If u want to check the Message's doc
   // Visit: https://github.com/wechaty/wechaty
   async checkMessagesAuth(message) {
@@ -51,8 +54,12 @@ class YamlAuthChecker {
   }
 
   async _checkInRoomBlackList(room) {
+    if (!room) {
+      return false
+    }
+
     const topic = await room.topic()
-    const alias = await room.alias()
+    // const alias = await room.alias()
 
     const config = this._config
     if (!config || !config.groupBlackList) {
@@ -63,9 +70,9 @@ class YamlAuthChecker {
       return true
     }
 
-    if (config.groupBlackList.alias && config.groupBlackList.alias.includes(alias)) {
-      return true
-    }
+    // if (config.groupBlackList.alias && config.groupBlackList.alias.includes(alias)) {
+    //   return true
+    // }
 
     return false
   }
@@ -91,4 +98,4 @@ class YamlAuthChecker {
   }
 }
 
-exports.YamlAuthCheck = YamlAuthChecker
+exports.YamlAuthChecker = YamlAuthChecker

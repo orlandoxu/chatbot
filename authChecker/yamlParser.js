@@ -1,12 +1,15 @@
 const fs = require('fs')
+const path = require('path')
 const yaml = require('js-yaml')
 
-function loadConfig() {
+async function loadConfig() {
   try {
-    let fileContents = fs.readFileSync('../config.yaml', 'utf8')
-    let config = yaml.safeLoad(fileContents)
+    const yamlFilePath = path.join(__dirname, '..', 'config.yaml')
+    let fileContents = await fs.readFileSync(yamlFilePath, 'utf8')
+    let config = yaml.load(fileContents)
     return config
   } catch (e) {
+    console.log(e)
     throw 'Yaml config file format error.'
   }
 }
