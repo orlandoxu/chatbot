@@ -106,7 +106,7 @@ class WechatRobot {
       const coin = coinItem[i]
       msg = `${msg}\nToken：${coin.name}`
       coin.dex.forEach(v => {
-        msg = `${msg}\n    [${v.dexName}]\t${v.price}`
+        msg = `${msg}\n    [${v.dexName}]\t${v.price} \t[ratio]\t${v.ratio}%`
       })
     }
 
@@ -128,15 +128,17 @@ class WechatRobot {
       const spiderInfos = this._coin2SpiderMap[coinName]
 
       /**
-       * @typedef {{dexName: string, price: number}} CoinDexObject
+       * @typedef {{dexName: string, price: number, ratio: number}} CoinDexObject
        * @typedef {{name: string, dex: [CoinDexObject]}} CoinItem
        * @type {CoinItem}
        */
       const coinItem = {name: coinName, dex: []}
       for (let spiderName in spiderInfos) {
         const spider = spiderInfos[spiderName]
-        const price = await spider.getTokenPrice(coinName)
-        coinItem.dex.push({dexName: spiderName, price: price})
+        const [price, ratio] = await spider.getTokenPrice(coinName)
+        coinItem.dex.push({
+          dexName: spiderName, price: price, ratio: ratio
+        })
       }
       coinPriceArr.push(coinItem)
     }

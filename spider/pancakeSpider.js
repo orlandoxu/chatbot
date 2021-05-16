@@ -27,7 +27,7 @@ class PancakeSpider {
    * @returns {Promise<number>}
    */
   async getTokenPrice(token) {
-    return await this._spiderProxy.getTokenPrice([token])
+    return await this._spiderProxy.getTokenPrice(token)
   }
 }
 
