@@ -62,7 +62,7 @@ class TextParser {
         return p
       }, [])
 
-    if (arr.length === 0 && (!options.includes('--mine') || !options.includes('-m'))) {
+    if (arr.length === 0 && !options.includes('--mine') && !options.includes('-m')) {
       return
     }
 
@@ -71,7 +71,7 @@ class TextParser {
     }
 
     return [arr.includes('-s'), options, arr.reduce((p, n) => {
-      if (n !== '-s') {
+      if (/^-/.test(n)) {
         p.push(n)
       }
 
