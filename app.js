@@ -20,13 +20,13 @@ const options = {
 const mdexSpider = new MdexSpider()
 const pancakeSpider = new PancakeSpider()
 const uniSpider = new UniSpider()
-// const huobiSpider = new HuobiSpider()
+const huobiSpider = new HuobiSpider()
 const wechatRobot = new WechatRobot({
   authChecker: new YamlAuthChecker(),
   msgParser: new TextParser(),
   // spiderList: [mdexSpider]
-  spiderList: [mdexSpider, pancakeSpider, uniSpider]
-  // spiderList: [mdexSpider, pancakeSpider, uniSpider, huobiSpider]
+  // spiderList: [mdexSpider, pancakeSpider, uniSpider]
+  spiderList: [mdexSpider, pancakeSpider, uniSpider, huobiSpider]
 })
 
 Wechaty.instance(options)
