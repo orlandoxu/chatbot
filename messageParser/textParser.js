@@ -62,7 +62,7 @@ class TextParser {
         return p
       }, [])
 
-    if (!arr || arr.length === 0) {
+    if (arr.length === 0 && (!options.includes('--mine') || !options.includes('-m'))) {
       return
     }
 
