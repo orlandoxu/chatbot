@@ -39,7 +39,7 @@ class HuobiSpider {
       return [undefined, undefined]
     }
 
-    return [tokenObj.ask, tokenObj.open]
+    return [tokenObj.ask, ((tokenObj.open - tokenObj.ask) / tokenObj.ask * 100).toFixed(2)]
   }
 
   _getAllTokenPrice() {
