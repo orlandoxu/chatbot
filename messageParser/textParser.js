@@ -71,7 +71,7 @@ class TextParser {
     }
 
     return [arr.includes('-s'), options, arr.reduce((p, n) => {
-      if (/^-/.test(n)) {
+      if (!/^-/.test(n)) {
         p.push(n)
       }
 

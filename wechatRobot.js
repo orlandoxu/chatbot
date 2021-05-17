@@ -93,7 +93,7 @@ class WechatRobot {
 
     const talkerId = message.talker().id
     if (options.includes('-a') || options.includes('--add')) {
-      this._follow.addTokens(talkerId, coinList)
+      await this._follow.addTokens(talkerId, coinList)
     }
 
     if (options.includes('-d') || options.includes('--del')) {

@@ -27,8 +27,8 @@ class CustomerFollow {
 
   async delTokens(userId, tokens) {
     const filepath = path.join(__dirname, '..', 'data', 'customer', userId)
-
     await fse.ensureFile(filepath)
+
     let userToken
     try {
       userToken = await fse.readJson(filepath)
