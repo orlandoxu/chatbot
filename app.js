@@ -9,6 +9,7 @@ const { TextParser } = require('./messageParser/textParser')
 const { MdexSpider } = require('./spider/mdexSpider')
 const { PancakeSpider } = require('./spider/pancakeSpider')
 const { UniSpider } = require('./spider/uniswapSpider')
+const { HuobiSpider } = require('./spider/huobiSpider')
 
 // 微信配置
 const options = {
@@ -19,11 +20,12 @@ const options = {
 const mdexSpider = new MdexSpider()
 const pancakeSpider = new PancakeSpider()
 const uniSpider = new UniSpider()
+const huobiSpider = new HuobiSpider()
 const wechatRobot = new WechatRobot({
   authChecker: new YamlAuthChecker(),
   msgParser: new TextParser(),
   // spiderList: [mdexSpider]
-  spiderList: [mdexSpider, pancakeSpider, uniSpider]
+  spiderList: [mdexSpider, pancakeSpider, uniSpider, huobiSpider]
 })
 
 Wechaty.instance(options)
