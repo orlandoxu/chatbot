@@ -1,4 +1,5 @@
 const qrTerminal = require('qrcode-terminal')
+const { CustomerFollow } = require('./customerFollow/customerFollow')
 const { date } = require('./lib/tools')
 
 class WechatRobot {
@@ -14,6 +15,7 @@ class WechatRobot {
     this._spiderList = spiderList
     this._authChecker = authChecker
     this._coin2SpiderMap = null
+    this._follow = new CustomerFollow()
   }
 
 
@@ -63,7 +65,6 @@ class WechatRobot {
       await this._initSpider4CoinList()
     }
 
-    // const talker = message.talker()
     // if (talker.id === this._user.id) {
     //   return false
     // }
@@ -81,15 +82,37 @@ class WechatRobot {
     }
 
     // Can not recall a message, cause web plugin doesn't supported!
-    const [recall, options, coinList] = msgObject
+    let [recall, options, coinList] = msgObject
     if (!options.includes('-s') && !options.includes('--search')) {
       return false
     }
+
     if (options.includes('-h') || options.includes('--help')) {
       this._showHelp(message)
     }
 
+    const talkerId = message.talker().id
+    if (options.includes('-a') || options.includes('--add')) {
+      this._follow.addTokens(talkerId, coinList)
+    }
+
+    if (options.includes('-d') || options.includes('--del')) {
+      this._follow.delTokens(talkerId, coinList)
+    }
+
+    if (options.includes('-m') || options.includes('--mine')) {
+      const userTokens = await this._follow.getUserToken(talkerId)
+      coinList = [...coinList, ...userTokens]
+    }
+
     // Step 5. Get the price and make the message
+    coinList = coinList.reduce((p, n) => {
+      if (!p.includes(n)) {
+        p.push(n)
+      }
+
+      return p
+    }, [])
     const coinItems = await this._getTokenPrices(coinList)
     const msgText = await this._makeTokenPrice(coinItems)
     message.say(msgText)
