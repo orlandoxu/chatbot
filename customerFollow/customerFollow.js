@@ -14,7 +14,7 @@ class CustomerFollow {
     }
 
     userToken = userToken || []
-    userToken = [...userToken, tokens.reduce((p, n) => {
+    userToken = [...userToken, ...tokens.reduce((p, n) => {
       if (!userToken.includes(n)) {
         p.push(n)
       }
