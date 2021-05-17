@@ -22,7 +22,7 @@ class CustomerFollow {
       return p
     }, [])]
 
-    await fse.writeJson(userToken)
+    await fse.writeJson(filepath, userToken)
   }
 
   async delTokens(userId, tokens) {
@@ -45,7 +45,7 @@ class CustomerFollow {
       return p
     }, [])
 
-    await fse.writeJson(userToken)
+    await fse.writeJson(filepath, userToken)
   }
 
   async getUserToken(userId) {
