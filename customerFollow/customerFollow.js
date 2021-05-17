@@ -3,7 +3,7 @@ const path = require('path')
 
 class CustomerFollow {
   async addTokens(userId, tokens) {
-    const filepath = path(__dirname, '..', 'data', 'customer', userId)
+    const filepath = path.join(__dirname, '..', 'data', 'customer', userId)
 
     await fse.ensureFile(filepath)
     let userToken
@@ -26,7 +26,7 @@ class CustomerFollow {
   }
 
   async delTokens(userId, tokens) {
-    const filepath = path(__dirname, '..', 'data', 'customer', userId)
+    const filepath = path.join(__dirname, '..', 'data', 'customer', userId)
 
     await fse.ensureFile(filepath)
     let userToken
@@ -49,7 +49,7 @@ class CustomerFollow {
   }
 
   async getUserToken(userId) {
-    const filepath = path(__dirname, '..', 'data', 'customer', userId)
+    const filepath = path.join(__dirname, '..', 'data', 'customer', userId)
     await fse.ensureFile(filepath)
     const userTokens = await fse.readJson(filepath)
     return userTokens || []
