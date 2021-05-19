@@ -38,7 +38,6 @@ Wechaty.instance(options)
     wechatRobot.logout(user)
   })
   .on('message', message => {
-    console.log(message)
     wechatRobot.msgHander(message)
   })
   .start()
