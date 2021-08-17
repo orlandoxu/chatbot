@@ -57,8 +57,6 @@ class HuobiSpider {
       }
 
       request(opt, function (error, response, body) {
-        console.log('sss')
-        console.log(error)
         if (!error && response.statusCode == 200) {
           try {
             const result = JSON.parse(body)
