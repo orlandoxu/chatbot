@@ -1,4 +1,4 @@
-GET http://47.240.162.107/coin/getCoinPrice?coins=btc
+GET http://47.240.162.107/coin/getCoinPrice?coins=btc,mana,etc
 #Content-Type: application/json
 
 #{
