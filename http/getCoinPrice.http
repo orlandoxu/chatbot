@@ -1,4 +1,4 @@
-GET http://localhost/coin/getCoinPrice
+GET http://47.240.162.107/coin/getCoinPrice
 #Content-Type: application/json
 
 #{

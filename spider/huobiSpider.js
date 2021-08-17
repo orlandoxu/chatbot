@@ -84,12 +84,12 @@ class HuobiSpider {
   }
 
   async _getAllTokenInfoWithCache() {
-    // const useCache = this._lastQueryTime  && ((new Date().getTime() - this._lastQueryTime) > this._cacheTime * 1000)
-    // if (this._tokenInfos && useCache) {
-    //   return this._tokenInfos
-    // }
-    //
-    // this._lastQueryTime = new Date().getTime()
+    const useCache = this._lastQueryTime  && ((new Date().getTime() - this._lastQueryTime) > 60 * 1000)
+    if (this._tokenInfos && useCache) {
+      return this._tokenInfos
+    }
+
+    this._lastQueryTime = new Date().getTime()
     return await this._getAllTokenPrice()
   }
 }

@@ -15,8 +15,16 @@ const huobiSpider = new HuobiSpider()
 
 const app = express()
 app.get('/coin/getCoinPrice', async (req, res) => {
-  const d = await huobiSpider.getTokenPrice('btc')
-  res.send(d)
+  const coins = req.params.coins.split(',')
+
+  const prices = []
+  for (let i = 0; i < coins.length; i++) {
+    const coin = coins[i]
+    const d = await huobiSpider.getTokenPrice(coin)
+    prices.push(d)
+  }
+
+  res.send(prices)
 });
 
 
