@@ -15,7 +15,7 @@ const huobiSpider = new HuobiSpider()
 
 const app = express()
 app.get('/coin/getCoinPrice', async (req, res) => {
-  const coins = req.params.coins.split(',')
+  const coins = req.query.coins.split(',')
 
   const prices = []
   for (let i = 0; i < coins.length; i++) {
