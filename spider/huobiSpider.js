@@ -46,7 +46,7 @@ class HuobiSpider {
     const self = this
     return new Promise((resolve) => {
       const headers = {
-        'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36'
       }
 
       const opt = {
@@ -57,6 +57,8 @@ class HuobiSpider {
       }
 
       request(opt, function (error, response, body) {
+        console.log('sss')
+        console.log(error)
         if (!error && response.statusCode == 200) {
           try {
             const result = JSON.parse(body)
@@ -82,12 +84,12 @@ class HuobiSpider {
   }
 
   async _getAllTokenInfoWithCache() {
-    const useCache = this._lastQueryTime  && ((new Date().getTime() - this._lastQueryTime) > this._cacheTime * 1000)
-    if (this._tokenInfos && useCache) {
-      return this._tokenInfos
-    }
-
-    this._lastQueryTime = new Date().getTime()
+    // const useCache = this._lastQueryTime  && ((new Date().getTime() - this._lastQueryTime) > this._cacheTime * 1000)
+    // if (this._tokenInfos && useCache) {
+    //   return this._tokenInfos
+    // }
+    //
+    // this._lastQueryTime = new Date().getTime()
     return await this._getAllTokenPrice()
   }
 }

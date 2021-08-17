@@ -1,0 +1,9 @@
+GET http://localhost/coin/getCoinPrice
+#Content-Type: application/json
+
+#{
+#  "username": "manager",
+#  "password": "manager"
+#}
+#
+###
