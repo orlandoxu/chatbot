@@ -10,28 +10,11 @@ class WechatRobot {
   //    _coin2SpiderMap    -   _coin2SpiderMap
   //        ltc => { 'mdex': spiderMdex }
 
-  constructor({spiderList, msgParser, authChecker}) {
-    this._msgParser = msgParser
+  constructor({spiderList, authChecker}) {
     this._spiderList = spiderList
     this._authChecker = authChecker
     this._coin2SpiderMap = null
     this._follow = new CustomerFollow()
-  }
-
-
-  login(user) {
-    console.log(`User ${user.id} logged in`)
-    this._user = user
-  }
-
-  logout(user) {
-    console.log(`User ${user.id} logged out`)
-    delete this._user
-  }
-
-  getQRCode(qrcode, status) {
-    // 在console端显示二维码
-    qrTerminal.generate(qrcode);
   }
 
   async _initSpider4CoinList() {
@@ -51,72 +34,72 @@ class WechatRobot {
     }
 
     // Add all tokens to message parser
-    this._msgParser.watch(Object.keys(this._coin2SpiderMap))
+    // this._msgParser.watch(Object.keys(this._coin2SpiderMap))
   }
 
-  async msgHander(message) {
-    // Step 1. Check login
-    if (!this._user) {
-      return false
-    }
-
-    // Step 2. Make sure ability is done
-    if (!this._coin2SpiderMap) {
-      await this._initSpider4CoinList()
-    }
-
-    // if (talker.id === this._user.id) {
-    //   return false
-    // }
-
-    // Step 3. Parse the message
-    const msgObject = this._msgParser.messageParse(message.text())
-    if (!msgObject) {
-      return
-    }
-
-    // Step 4. Check user's auth
-    const hasAuth = await this._authChecker.checkMessagesAuth(message)
-    if (!hasAuth) {
-      return false
-    }
-
-    // Can not recall a message, cause web plugin doesn't supported!
-    let [recall, options, coinList] = msgObject
-    if (!options.includes('-s') && !options.includes('--search')) {
-      return false
-    }
-
-    if (options.includes('-h') || options.includes('--help')) {
-      this._showHelp(message)
-    }
-
-    const talkerId = message.talker().id
-    if (options.includes('-a') || options.includes('--add')) {
-      await this._follow.addTokens(talkerId, coinList)
-    }
-
-    if (options.includes('-d') || options.includes('--del')) {
-      this._follow.delTokens(talkerId, coinList)
-    }
-
-    if (options.includes('-m') || options.includes('--mine')) {
-      const userTokens = await this._follow.getUserToken(talkerId)
-      coinList = [...coinList, ...userTokens]
-    }
-
-    // Step 5. Get the price and make the message
-    coinList = coinList.reduce((p, n) => {
-      if (!p.includes(n)) {
-        p.push(n)
-      }
-
-      return p
-    }, [])
-    const coinItems = await this._getTokenPrices(coinList)
-    const msgText = await this._makeTokenPrice(coinItems)
-    message.say(msgText)
-  }
+  // async msgHander(message) {
+  //   // Step 1. Check login
+  //   if (!this._user) {
+  //     return false
+  //   }
+  //
+  //   // Step 2. Make sure ability is done
+  //   if (!this._coin2SpiderMap) {
+  //     await this._initSpider4CoinList()
+  //   }
+  //
+  //   // if (talker.id === this._user.id) {
+  //   //   return false
+  //   // }
+  //
+  //   // Step 3. Parse the message
+  //   const msgObject = this._msgParser.messageParse(message.text())
+  //   if (!msgObject) {
+  //     return
+  //   }
+  //
+  //   // Step 4. Check user's auth
+  //   const hasAuth = await this._authChecker.checkMessagesAuth(message)
+  //   if (!hasAuth) {
+  //     return false
+  //   }
+  //
+  //   // Can not recall a message, cause web plugin doesn't supported!
+  //   let [recall, options, coinList] = msgObject
+  //   if (!options.includes('-s') && !options.includes('--search')) {
+  //     return false
+  //   }
+  //
+  //   if (options.includes('-h') || options.includes('--help')) {
+  //     this._showHelp(message)
+  //   }
+  //
+  //   const talkerId = message.talker().id
+  //   if (options.includes('-a') || options.includes('--add')) {
+  //     await this._follow.addTokens(talkerId, coinList)
+  //   }
+  //
+  //   if (options.includes('-d') || options.includes('--del')) {
+  //     this._follow.delTokens(talkerId, coinList)
+  //   }
+  //
+  //   if (options.includes('-m') || options.includes('--mine')) {
+  //     const userTokens = await this._follow.getUserToken(talkerId)
+  //     coinList = [...coinList, ...userTokens]
+  //   }
+  //
+  //   // Step 5. Get the price and make the message
+  //   coinList = coinList.reduce((p, n) => {
+  //     if (!p.includes(n)) {
+  //       p.push(n)
+  //     }
+  //
+  //     return p
+  //   }, [])
+  //   const coinItems = await this._getTokenPrices(coinList)
+  //   const msgText = await this._makeTokenPrice(coinItems)
+  //   message.say(msgText)
+  // }
 
   /**
    * @param coinItem {CoinItem[]}
@@ -173,7 +156,6 @@ class WechatRobot {
     const help = 'this is help'
     message.say(help)
   }
-
 }
 
 exports.WechatRobot = WechatRobot
